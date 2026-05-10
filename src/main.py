@@ -27,7 +27,7 @@ GPT_CONFIG_124M = {
     "qkv_bias": False, 
 }
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available else "cpu")
 
 def load_model(device):
     """
@@ -78,7 +78,7 @@ def run_model(device):
     
 
 def main():
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available else "cpu")
     
     parser = argparse.ArgumentParser(description="Train or Run")
     parser.add_argument("--mode", choices = ["train", "run"], required = True, help = "Train or run")

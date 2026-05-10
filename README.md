@@ -46,6 +46,7 @@ Part 3: Architecture
     - Scale and Shift Weights in Layer Normalization are used to adjust the normalized output
 - GELU: a non-linear activation function that sits in between linear layers. A FeedForward Module is coded into the transformer block that contains Linear Layer, GELU, and Linear Layer. 
 - Activation functions add non-linearity to neural networks to learn complex patterns. 
+- There is also a linear layer implementation from scratch but for real training used Pytorch for speed. 
 
 nn.Sequential is a container that allows to build layers in neural nets
 In a Linear layer, the input activations are used to learn weights using y = xW+b. The First Linear Layer expands the feature size, then GELU applies smooth filtering, then Second Layer compresses it and "summarizes" what is learned into the right dimensions. 

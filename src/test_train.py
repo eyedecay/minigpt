@@ -19,7 +19,7 @@ def test_train():
     text = "test" * 100
     train_loader = create_dataloader_v1(text, batch_size=2, max_length = 64, stride = 32, shuffle = True)
 
-    device = torch.device("cpu")        
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available else "cpu")      
     model = GPTModel(test_cfg).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr = 5e-4, weight_decay = 0.1)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)
