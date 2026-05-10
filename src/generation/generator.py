@@ -15,18 +15,23 @@ def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k 
         temperature (float, optional): sampling temp. Defaults to 0.0.
         top_k (int, optional): how many for top-k. Defaults to None.
         eos_id (int, optional): optional end-of-sequence token to stop generation early. Defaults to None.
+        past_kv
 
     Returns:
         torch.Tensor: token indices with generated tokens appended
     """
+    past_kv_list = None
     for _ in range(max_new_tokens):
-
-        idx_cond = idx[:, -context_size:]
+        if past_kv_list is None:
+            idx_cond = idx[:, -context_size:]
+        else:
+            idx_cond = idx[:, -1:]
 
         #call the forward pass of GPTMODEL such that input enters model 
         with torch.no_grad():
             #call GPTModel.forward() which starts the GPT logic.
             logits = model(idx_cond) 
+            past_kv_list = model(past_kv_list)
         logits = logits[:, -1, :]
 
         if top_k is not None:

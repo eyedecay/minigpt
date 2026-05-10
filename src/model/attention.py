@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from src.model.RoPE import RotaryEmbedding, apply_RoPE
+from src.model.layers import LinearLayer
 
 
 class MultiHeadAttention(nn.Module):
@@ -50,7 +51,7 @@ class MultiHeadAttention(nn.Module):
         self.rope = RotaryEmbedding(self.head_dim, context_length)
         self.register_buffer("mask", torch.triu(torch.ones(context_length, context_length), diagonal=1))
 
-    def forward(self, x):
+    def forward(self, x, past_kv = None):
         """
         forward pass of attention
 
@@ -75,16 +76,26 @@ class MultiHeadAttention(nn.Module):
         queries = queries.transpose(1, 2)
         values = values.transpose(1, 2)
 
+        #KV Cache
+        past_len = past_kv[0].shape[2] if past_kv is not None else 0
+
         #RoPE Embeddings
         cos, sin = self.rope(queries, num_tokens)
+        cos = cos[:, :, past_len:, :]
+        sin = sin[:, :, past_len:, :]
         queries = apply_RoPE(queries, cos, sin)
         keys = apply_RoPE(queries, cos, sin)
+
+        if past_kv is not None:
+            past_keys, past_values = past_kv 
+            keys = torch.cat([past_keys, keys], dim = 2)
+            values = torch.cat([past_values, values], dim = 2)
 
         #Compare a query with all keys to see similarity. (the dot product)
         attn_scores = queries @ keys.transpose(2, 3)  
 
-        mask_bool = self.mask.bool()[:num_tokens, :num_tokens]
-
+        total_len = keys.shape[2]
+        mask_bool = self.mask.bool()[past_len:past_len + num_tokens, :total_len]
         attn_scores.masked_fill_(mask_bool, -torch.inf)
 
         attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
@@ -95,6 +106,6 @@ class MultiHeadAttention(nn.Module):
         context_vec = context_vec.contiguous().view(batch_size, num_tokens, self.d_out)
         context_vec = self.out_proj(context_vec)  
 
-        return context_vec
+        return context_vec, (keys, values)
 
  

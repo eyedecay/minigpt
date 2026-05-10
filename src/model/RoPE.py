@@ -19,9 +19,9 @@ class RotaryEmbedding(nn.Module):
         self.register_buffer("cos_encoded", angles.cos())
         self.register_buffer("sin_encoded", angles.sin())
     
-    def forward(self, x, seq_len):
-        cos = self.cos_encoded[:seq_len].unsqueeze(0).unsqueeze(0)
-        sin = self.sin_encoded[:seq_len].unsqueeze(0).unsqueeze(0)
+    def forward(self, x, seq_len, start_pos = 0):
+        cos = self.cos_encoded[start_pos:start_pos + seq_len].unsqueeze(0).unsqueeze(0)
+        sin = self.sin_encoded[start_pos:start_pos + seq_len].unsqueeze(0).unsqueeze(0)
         cos = cos.repeat_interleave(2, dim = -1)
         sin = sin.repeat_interleave(2, dim = -1)
         return cos, sin

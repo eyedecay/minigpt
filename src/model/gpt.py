@@ -12,16 +12,24 @@ class GPTModel(nn.Module):
         self.context_length = cfg["context_length"]
         self.drop_emb = nn.Dropout(cfg["drop_rate"])
 
-        self.trf_blocks = nn.Sequential(*[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
+        self.trf_blocks = nn.ModuleList(*[TransformerBlock(cfg) for _ in range(cfg["n_layers"])])
 
         self.final_norm = LayerNorm(cfg["emb_dim"])
         self.out_head = nn.Linear(cfg["emb_dim"], cfg["vocab_size"], bias = False)
     
-    def forward(self, in_idx):
+    def forward(self, in_idx, past_kv_list = None):
         x = self.tok_emb(in_idx)
         x = self.drop_emb(x)
-        x = self.trf_blocks(x)
+
+        new_kv_list = []
+        #processes output
+        for i, block in enumerate(self.trf_blocks):
+            past_kv = past_kv_list[i] if past_kv_list is not None else None 
+            x, new_kv = block(x, past_kv)
+            new_kv_list.append(new_kv)
+        
         x = self.final_norm(x)
         logits = self.out_head(x)
-        return logits
+
+        return logits, new_kv_list
 
