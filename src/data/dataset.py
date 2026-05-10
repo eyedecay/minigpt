@@ -6,7 +6,23 @@ from torch.utils.data import Dataset, DataLoader
 
 
 class GPTDatasetV1(Dataset):
+    """
+    GPTDataset that creates training examples for LLM using sliding window
+
+    Attributes:
+        input_ids (list): List of tensor objects with input token sequences
+        target_ids (list): input_ids shifted one position to the right
+    """
     def __init__(self, txt, tokenizer, max_length, stride):
+        """
+        Initialization of dataset, tokenizing text and creating input/target pairs
+
+        Args:
+            txt (str): raw text
+            tokenizer (tiktoken.Encoding): tokenizer
+            max_length (int): max length of input/target
+            stride (int): step size
+        """
         self.input_ids = []
         self.target_ids = []
 
@@ -19,9 +35,24 @@ class GPTDatasetV1(Dataset):
             self.target_ids.append(torch.tensor(target_chunk))
         
     def __len__(self):
+        """
+        Returns length for testing purposes
+
+        Returns:
+            None
+        """
         return len(self.input_ids)
 
     def __getitem__(self, idx):
+        """
+        Returns input and target tensors 
+
+        Args:
+            idx (int): index of sample
+
+        Returns:
+            (tuple): (input_ids, target_ids)
+        """
         return self.input_ids[idx], self.target_ids[idx]
 
 

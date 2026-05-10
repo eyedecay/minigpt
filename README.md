@@ -52,7 +52,9 @@ In a Linear layer, the input activations are used to learn weights using y = xW+
 
 - Shortcut Connections: input is added directly to output to preserve original information and make gradients flow easier. 
 
-Created the Transformer block and the GPT Model that includes the Transformer Block with everything combined. The Transformer is using MultiHeadAttention from model.py and builds TransformerBlock with LayerNorm, Attn, Dropout + shortcut. The Full Model stacks 12 Transformer vlocks, adding token and positional embeddings, outputting logits
+Created the Transformer block and the GPT Model that includes the Transformer Block with everything combined. The Transformer is using MultiHeadAttention from model.py and builds TransformerBlock with LayerNorm, Attn, Dropout + shortcut. The Full Model stacks 12 Transformer vlocks, adding token and outputting logits
+
+- RoPE Embeddings: Instead of absolute positional embeddings, using RoPE ebeddings precomputes rotation angles for each position up to max_seq_len. The model can understand when two tokens are "x positions" apart rather than token x attends to token at other random position
 
 Part 4: Training
 
