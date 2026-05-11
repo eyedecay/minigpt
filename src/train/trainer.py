@@ -22,6 +22,18 @@ def calc_loss_batch(input_batch, target_batch, model, device):
     return loss
 
 def calc_loss_loader(data_loader, model, device, num_batches = None):
+    """
+    Computes average loss over DataLoader (mean loss of all batches) 
+
+    Args:
+        data_loader (DataLoader): Pytorch Dataloader (input_batch, target_batch) pairs
+        model (nn.Module): nn model
+        device (torch.device): device (cuda, mps, cpu)
+        num_batches (int, optional): number of batches. Defaults to None.
+
+    Returns:
+        float: average loss
+    """
     total_loss = 0. 
     if len(data_loader) == 0:
         return float("nan")
