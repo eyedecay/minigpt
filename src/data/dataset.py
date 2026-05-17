@@ -2,6 +2,7 @@ import tiktoken
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
+import numpy as np
 
 
 
@@ -13,7 +14,7 @@ class GPTDatasetV1(Dataset):
         input_ids (list): List of tensor objects with input token sequences
         target_ids (list): input_ids shifted one position to the right
     """
-    def __init__(self, txt, tokenizer, max_length, stride):
+    def __init__(self, bin_path, max_length, stride):
         """
         Initialization of dataset, tokenizing text and creating input/target pairs
 
@@ -23,17 +24,11 @@ class GPTDatasetV1(Dataset):
             max_length (int): max length of input/target
             stride (int): step size
         """
-        self.input_ids = []
-        self.target_ids = []
+        self.data = np.memmap(bin_path, dtype = np.uint16, mode = "r")
 
-        token_ids = tokenizer.encode(txt, allowed_special={"<|endoftext|>"})
+        self.max_length = max_length 
+        self.stride = stride
 
-        for i in range(0, len(token_ids) - max_length, stride):
-            input_chunk = token_ids[i:i + max_length]
-            target_chunk = token_ids[i+1: i + 1 + max_length]
-            self.input_ids.append(torch.tensor(input_chunk))
-            self.target_ids.append(torch.tensor(target_chunk))
-        
     def __len__(self):
         """
         Returns length for testing purposes
@@ -41,7 +36,7 @@ class GPTDatasetV1(Dataset):
         Returns:
             None
         """
-        return len(self.input_ids)
+        return len(self.data)
 
     def __getitem__(self, idx):
         """
@@ -53,10 +48,13 @@ class GPTDatasetV1(Dataset):
         Returns:
             (tuple): (input_ids, target_ids)
         """
-        return self.input_ids[idx], self.target_ids[idx]
+        start = idx * self.stride 
+        input_chunk = self.data[start: start + self.max_length]
+        target_chunk = self.data[start + 1: start + self.max_length + 1]
+        return torch.tensor(input_chunk.astype(np.int64)), torch.tensor(target_chunk.astype(np.int64))
 
 
-def create_dataloader_v1(txt, batch_size = 4, max_length = 256, stride = 120, shuffle = True, drop_last = True, num_workers = 0):
+def create_dataloader_v1(bin_path, batch_size = 4, max_length = 256, stride = 120, shuffle = True, drop_last = True, num_workers = 0):
     """
     Turns raw text into a PyTorch DataLoader that produces batches of input/target token sequences
     Args:
@@ -74,7 +72,7 @@ def create_dataloader_v1(txt, batch_size = 4, max_length = 256, stride = 120, sh
 
     tokenizer = tiktoken.get_encoding("gpt2")
 
-    dataset = GPTDatasetV1(txt, tokenizer, max_length, stride)
+    dataset = GPTDatasetV1(bin_path, tokenizer, max_length, stride)
 
     dataloader = DataLoader(dataset, batch_size = batch_size, shuffle = shuffle, drop_last = drop_last, num_workers = num_workers)
 
