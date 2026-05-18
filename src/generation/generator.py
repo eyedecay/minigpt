@@ -29,9 +29,7 @@ def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k 
 
         #call the forward pass of GPTMODEL such that input enters model 
         with torch.no_grad():
-            #call GPTModel.forward() which starts the GPT logic.
-            logits = model(idx_cond) 
-            past_kv_list = model(past_kv_list)
+            logits, past_kv_list = model(idx_cond, past_kv_list)
         logits = logits[:, -1, :]
 
         if top_k is not None:

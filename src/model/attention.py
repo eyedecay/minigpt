@@ -80,9 +80,7 @@ class MultiHeadAttention(nn.Module):
         past_len = past_kv[0].shape[2] if past_kv is not None else 0
 
         #RoPE Embeddings
-        cos, sin = self.rope(queries, num_tokens)
-        cos = cos[:, :, past_len:, :]
-        sin = sin[:, :, past_len:, :]
+        cos, sin = self.rope(queries, num_tokens, start_pos = past_len)
         queries = apply_RoPE(queries, cos, sin)
         keys = apply_RoPE(keys, cos, sin)
 
