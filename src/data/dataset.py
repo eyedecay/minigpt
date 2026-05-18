@@ -36,7 +36,7 @@ class GPTDatasetV1(Dataset):
         Returns:
             None
         """
-        return len(self.data)
+        return (len(self.data) -self.max_length) // self.stride
 
     def __getitem__(self, idx):
         """
@@ -54,7 +54,7 @@ class GPTDatasetV1(Dataset):
         return torch.tensor(input_chunk.astype(np.int64)), torch.tensor(target_chunk.astype(np.int64))
 
 
-def create_dataloader_v1(bin_path, batch_size = 4, max_length = 256, stride = 120, shuffle = True, drop_last = True, num_workers = 0):
+def create_dataloader_v1(bin_path, batch_size = 2, max_length = 128, stride = 128, shuffle = True, drop_last = True, num_workers = 0):
     """
     Turns raw text into a PyTorch DataLoader that produces batches of input/target token sequences
     Args:

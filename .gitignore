@@ -3,3 +3,4 @@ venv
 __pycache__
 *.pth
 pretrainingtokens.bin
+pretraining_subset.bin

@@ -84,7 +84,7 @@ class MultiHeadAttention(nn.Module):
         cos = cos[:, :, past_len:, :]
         sin = sin[:, :, past_len:, :]
         queries = apply_RoPE(queries, cos, sin)
-        keys = apply_RoPE(queries, cos, sin)
+        keys = apply_RoPE(keys, cos, sin)
 
         if past_kv is not None:
             past_keys, past_values = past_kv 

@@ -88,8 +88,8 @@ def main():
     if args.mode == "train":
         #Train using the real data
         
-        train_loader = create_dataloader_v1("pretrainingtokens.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
-        val_loader = create_dataloader_v1("pretrainingtokens.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
+        train_loader = create_dataloader_v1("pretraining_subset.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
+        val_loader = create_dataloader_v1("pretraining_subset.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
         
         model = GPTModel(GPT_CONFIG_124M).to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr = 5e-4, weight_decay = 0.1)
@@ -114,7 +114,7 @@ def main():
             scheduler = scheduler,
             device = device,
             num_epochs = 10,
-            eval_freq = 5,
+            eval_freq = 500,
             eval_iter = 1,
             start_context = "Hi",
             tokenizer = tiktoken.get_encoding("gpt2")
