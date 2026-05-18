@@ -99,6 +99,11 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
                 val_losses.append(val_loss)
                 track_tokens_seen.append(tokens_seen)
                 print(f"Epoch {epoch + 1} (Step {global_step:06d}): train loss {train_loss:.3f}, val loss {val_loss:.3f} ")
+                torch.save({
+                    "model_state_dict": model.state_dict(),
+                    "optimizer_state_dict": optimizer.state_dict(),
+                    "scheduler_state_dict": scheduler.state_dict(),
+                },"model_and_optimizer.pth")
 
         generate_and_print_sample(model, tokenizer, device, start_context)
     

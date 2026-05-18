@@ -63,7 +63,7 @@ class GELU(nn.Module):
         """
         return 0.5 * x * (1+torch.tanh(torch.sqrt(torch.tensor(2.0/torch.pi))*(x+0.044715 * torch.pow(x,3))))
 
-class LinearLayer(nn.module):
+class LinearLayer(nn.Module):
     """
     Linear Layer from scratch. matrix multiplication of every row of x with every row of weight. nn.Parameter means it is learnable.
 
@@ -76,7 +76,7 @@ class LinearLayer(nn.module):
         self.weight = nn.Parameter(torch.randn(d_out, d_in) * 0.01)
         self.bias = nn.Parameter(torch.zeros(d_out)) if bias else None
     def forward(self, x):
-        out = x @ self.weights.T
+        out = x @ self.weight.T
         if self.bias is not None:
             out = out + self.bias
         return out

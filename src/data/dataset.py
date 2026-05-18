@@ -72,7 +72,7 @@ def create_dataloader_v1(bin_path, batch_size = 4, max_length = 256, stride = 12
 
     tokenizer = tiktoken.get_encoding("gpt2")
 
-    dataset = GPTDatasetV1(bin_path, tokenizer, max_length, stride)
+    dataset = GPTDatasetV1(bin_path, max_length, stride)
 
     dataloader = DataLoader(dataset, batch_size = batch_size, shuffle = shuffle, drop_last = drop_last, num_workers = num_workers)
 
