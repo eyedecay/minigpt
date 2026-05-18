@@ -86,12 +86,10 @@ def main():
 
     # Train mode 
     if args.mode == "train":
-        #Placeholder text (find real data)
-        with open("the-verdict.txt", "r", encoding = "utf-8") as f:
-            raw_text = f.read()
+        #Train using the real data
         
-        train_loader = create_dataloader_v1(raw_text, batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
-        val_loader = create_dataloader_v1(raw_text, batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
+        train_loader = create_dataloader_v1("pretrainingtokens.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
+        val_loader = create_dataloader_v1("pretrainingtokens.bin", batch_size=2, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
         
         model = GPTModel(GPT_CONFIG_124M).to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr = 5e-4, weight_decay = 0.1)
