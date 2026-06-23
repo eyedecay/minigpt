@@ -89,6 +89,7 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm = 1.0)
             # Optimizer + Learning Rate Scheduler
             optimizer.step()
+            scheduler.step()
             tokens_seen += input_batch.numel()
             global_step += 1
 
@@ -105,7 +106,7 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
                 },"model_and_optimizer.pth")
 
         generate_and_print_sample(model, tokenizer, device, start_context)
-        scheduler.step()
+        
     
     # Checkpoint for saving weights
     torch.save({

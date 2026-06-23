@@ -28,7 +28,7 @@ GPT_CONFIG_124M = {
 }
 
 device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
-
+print(device)
 def load_model(device):
     """
     Load the trained model from checkpoint for inference
@@ -78,7 +78,7 @@ def run_model(device):
     
 
 def main():
-    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available else "cpu")
+    device = torch.device("cuda" if torch.cuda.is_available() else "mps" if torch.backends.mps.is_available() else "cpu")
     
     parser = argparse.ArgumentParser(description="Train or Run")
     parser.add_argument("--mode", choices = ["train", "run"], required = True, help = "Train or run")
@@ -93,7 +93,8 @@ def main():
         
         model = GPTModel(GPT_CONFIG_124M).to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr = 5e-4, weight_decay = 0.1)
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=10)
+        training_total_steps = len(train_loader)
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training_total_steps)
 
         #start using saved weights 
         if os.path.exists("model_and_optimizer.pth"):
@@ -113,7 +114,7 @@ def main():
             optimizer = optimizer,
             scheduler = scheduler,
             device = device,
-            num_epochs = 10,
+            num_epochs = 1,
             eval_freq = 500,
             eval_iter = 1,
             start_context = "Hi",
