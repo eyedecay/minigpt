@@ -83,7 +83,8 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
 
         for input_batch, target_batch in train_loader:
             optimizer.zero_grad()
-            loss = calc_loss_batch(input_batch, target_batch, model, device)
+            with torch.amp.autocast(device_type = "cuda", dtype = torch.bfloat16):
+                loss = calc_loss_batch(input_batch, target_batch, model, device)
             loss.backward()
             # Gradient Clipping
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm = 1.0)

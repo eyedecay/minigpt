@@ -41,6 +41,7 @@ def load_model(device):
     """
 
     model = GPTModel(GPT_CONFIG_124M).to(device)
+    model = torch.compile(model)
     model.to(device)
 
     checkpoint = torch.load("model_and_optimizer.pth", map_location = device)
@@ -88,8 +89,8 @@ def main():
     if args.mode == "train":
         #Train using the real data
         
-        train_loader = create_dataloader_v1("pretraining_subset.bin", batch_size=8, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
-        val_loader = create_dataloader_v1("pretraining_subset.bin", batch_size=8, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
+        train_loader = create_dataloader_v1("train_tokens.bin", batch_size=32, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = True)
+        val_loader = create_dataloader_v1("val_tokens.bin", batch_size=32, max_length = GPT_CONFIG_124M["context_length"], stride = GPT_CONFIG_124M["context_length"], shuffle = False)
         
         model = GPTModel(GPT_CONFIG_124M).to(device)
         optimizer = torch.optim.AdamW(model.parameters(), lr = 5e-4, weight_decay = 0.1)

@@ -90,20 +90,30 @@ class MultiHeadAttention(nn.Module):
             values = torch.cat([past_values, values], dim = 2)
 
         #Compare a query with all keys to see similarity. (the dot product)
-        attn_scores = queries @ keys.transpose(2, 3)  
+        scale = self.head_dim ** -0.5
 
         total_len = keys.shape[2]
-        mask_bool = self.mask.bool()[past_len:past_len + num_tokens, :total_len]
-        attn_scores.masked_fill_(mask_bool, -torch.inf)
+        if past_kv is not None:
+            mask_bool = self.mask.bool()[past_len:past_len + num_tokens, :total_len]
 
-        attn_weights = torch.softmax(attn_scores / keys.shape[-1]**0.5, dim=-1)
-        attn_weights = self.dropout(attn_weights)
+            attn_mask = torch.zeros(1,1,num_tokens, total_len, dtype = queries.dtype, device = queries.device)
+            attn_mask.masked_fill_(mask_bool.view(1,1,num_tokens,total_len), float("-inf"))
+            is_causal = False
+        
+        else:
+            attn_mask = None 
+            is_causal = True 
 
-        context_vec = (attn_weights @ values).transpose(1, 2)
+        context_vec = torch.nn.functional.scaled_dot_product_attention(
+            queries, keys, values, 
+            attn_mask = attn_mask,
+            scale = scale,
+            dropout_p = self.dropout.p if self.training else 0.0, 
+            is_causal = is_causal
+        ).transpose(1,2)
 
         context_vec = context_vec.contiguous().view(batch_size, num_tokens, self.d_out)
-        context_vec = self.out_proj(context_vec)  
-
+        context_vec = self.out_proj(context_vec)
         return context_vec, (keys, values)
 
  
