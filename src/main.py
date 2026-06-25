@@ -44,7 +44,7 @@ def load_model(device):
     model = torch.compile(model)
     model.to(device)
 
-    checkpoint = torch.load("model_and_optimizer.pth", map_location = device)
+    checkpoint = torch.load("test_model1.pth", map_location = device)
     model.load_state_dict(checkpoint["model_state_dict"])
 
 
@@ -70,7 +70,10 @@ def run_model(device):
             model = model,
             idx = token_ids,
             max_new_tokens = 100,
-            context_size = GPT_CONFIG_124M["context_length"]
+            context_size = GPT_CONFIG_124M["context_length"],
+            temperature = 0.7,
+            top_k = 5,
+            repetition = 1.3
         )
         print(token_ids_to_text(output, tokenizer))
         prompt = input("\n Enter prompt: ")

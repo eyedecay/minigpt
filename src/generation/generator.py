@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
-def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k = None, eos_id = None):
+def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k = None, eos_id = None, repetition = 1.0):
     """
     The generator function that generates new tokens
 
@@ -32,6 +32,11 @@ def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k 
             logits, past_kv_list = model(idx_cond, past_kv_list)
         logits = logits[:, -1, :]
 
+        if repetition != 1.0:
+            for i in range(idx.shape[0]):
+                unique_tokens = torch.unique(idx[i])
+                generated_logits = logits[i, unique_tokens]
+                logits[i, unique_tokens] = torch.where(generated_logits >0, generated_logits/repetition, generated_logits * repetition)
         if top_k is not None:
             top_logits, _ = torch.topk(logits, top_k)
             min_val = top_logits[:, -1]
