@@ -15,6 +15,13 @@ class AlpacaDataset(Dataset):
 
             prompt_ids = tokenizer.encode(prompt)
             response_ids = tokenizer.encode(response)
+
+            input_ids = prompt_ids + response_ids + [50256]
+
+            target_ids = ([-100] * len(prompt_ids) + response_ids + [50256])
+
+            self.examples.append((torch.tensor(input_ids, dtype = torch.long), torch.tensor(target_ids, dtype = torch.long)))
+            
 def format_prompt(instruction, input_text):
     if input_text.strip():
         return (
@@ -31,12 +38,4 @@ def format_prompt(instruction, input_text):
         )
 
 
-dataset = load_dataset("tatsu-lab/alpaca")
-train_data = dataset["train"]
-print(train_data[0])
 
-def tokenize(example):
-    tokens = tokenizer.encode(example["text"])
-    return {"input_ids": tokens}
-
-tokenized_dataset = train_data.map(tokenize, remove_columns=train_data.column_names)
