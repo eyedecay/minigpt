@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "electron": "electron app/main.js"
+    "electron": "electron electron-app/main.js"
   },
   "dependencies": {
     "react": "^19.2.7",
