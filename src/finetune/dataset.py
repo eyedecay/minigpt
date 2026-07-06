@@ -3,6 +3,8 @@ import tiktoken
 from datasets import load_dataset 
 from torch.utils.data import Dataset, DataLoader
 
+MAX_LEN = 1024
+
 
 class AlpacaDataset(Dataset):
     def __init__(self, split_data, tokenizer):
@@ -17,8 +19,10 @@ class AlpacaDataset(Dataset):
             response_ids = tokenizer.encode(response)
 
             input_ids = prompt_ids + response_ids + [50256]
+            input_ids = input_ids[:MAX_LEN]
 
-            target_ids = ([-100] * len(prompt_ids) + response_ids + [50256])
+            target_ids = ([-100] * (len(prompt_ids)-1) + response_ids + [50256, -100])
+            target_ids = target_ids[:MAX_LEN]
 
             self.examples.append((torch.tensor(input_ids, dtype = torch.long), torch.tensor(target_ids, dtype = torch.long)))
     

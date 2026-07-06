@@ -30,7 +30,11 @@ scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=training
 
 
 checkpoint = torch.load("test_model1.pth", map_location=device)
-model.load_state_dict(checkpoint["model_state_dict"])
+
+#Fix mismatch with weights
+state_dict = checkpoint["model_state_dict"]
+clean_state_dict = {k.replace("_orig_mod.", ""): v for k,v in state_dict.items()}
+model.load_state_dict(clean_state_dict)
 optimizer.load_state_dict(checkpoint["optimizer_state_dict"])
 scheduler.load_state_dict(checkpoint["scheduler_state_dict"])
 
