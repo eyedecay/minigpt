@@ -41,14 +41,15 @@ def load_model(device):
     """
 
     model = GPTModel(GPT_CONFIG_124M).to(device)
-    model = torch.compile(model)
+    
     model.to(device)
 
-    checkpoint = torch.load("test_model1.pth", map_location = device)
+    checkpoint = torch.load("finetuned-1.pth", map_location = device)
     model.load_state_dict(checkpoint["model_state_dict"])
 
 
     model.eval()
+    model = torch.compile(model)
     return model
 
 
@@ -62,7 +63,8 @@ def run_model(device):
     model = load_model(device)
     tokenizer = tiktoken.get_encoding("gpt2")
 
-    prompt = input("\n Enter prompt: ")
+    user_input = input("Ask Something: ")
+    prompt = f"Below is an instruction that describes a task. Write a response that appropriately completes the Request. \n ### Instruction: \n {user_input} \n ###Response: "
     while prompt != "q":
         token_ids = text_to_token_ids(prompt, tokenizer).to(device)
 
