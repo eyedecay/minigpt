@@ -104,7 +104,7 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
                     "model_state_dict": model.state_dict(),
                     "optimizer_state_dict": optimizer.state_dict(),
                     "scheduler_state_dict": scheduler.state_dict(),
-                },"model_and_optimizer.pth")
+                },"finetuned-1.pth")
 
         generate_and_print_sample(model, tokenizer, device, start_context)
         
@@ -115,7 +115,7 @@ def train_model_simple(model, train_loader, val_loader, optimizer, scheduler, de
         "optimizer_state_dict": optimizer.state_dict(),
         "scheduler_state_dict": scheduler.state_dict(),
         },
-        "test_model1.pth"
+        "finetuned-1.pth"
     )
     return train_losses, val_losses, track_tokens_seen 
 
