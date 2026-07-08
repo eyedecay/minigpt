@@ -41,7 +41,7 @@ def load_model(device):
     """
 
     model = GPTModel(GPT_CONFIG_124M).to(device)
-    
+
     model.to(device)
 
     checkpoint = torch.load("finetuned-1.pth", map_location = device)
@@ -73,12 +73,14 @@ def run_model(device):
             idx = token_ids,
             max_new_tokens = 100,
             context_size = GPT_CONFIG_124M["context_length"],
-            temperature = 0.7,
-            top_k = 5,
+            temperature = 0.8,
+            top_k = 50,
+            eos_id = 50256,
             repetition = 1.3
         )
         print(token_ids_to_text(output, tokenizer))
-        prompt = input("\n Enter prompt: ")
+        user_input = input("Ask Something: ")
+        prompt = f"Below is an instruction that describes a task. Write a response that appropriately completes the Request. \n ### Instruction: \n {user_input} \n ###Response: "
 
     print("Ended")
     

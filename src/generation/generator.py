@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
-def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k = None, eos_id = None, repetition = 1.0):
+def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k = None, eos_id = None, repetition = 1.0 ):
     """
     The generator function that generates new tokens
 
@@ -55,7 +55,7 @@ def generate(model, idx, max_new_tokens, context_size, temperature = 0.0, top_k 
         else:
             idx_next = torch.argmax(logits, dim = -1, keepdim = True)
 
-        if idx_next == eos_id:
+        if eos_id is not None and idx_next.item() == eos_id:
             break 
         idx = torch.cat((idx, idx_next), dim = 1)
     
