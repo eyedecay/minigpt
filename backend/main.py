@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 import torch
 
 from src.model import GPTModel
@@ -48,6 +49,13 @@ model = load_model(device)
 
 app = FastAPI()
 
+app.add_middleware(
+    CORSMiddleware, 
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class Prompt(BaseModel):
     prompt: str
 
@@ -72,7 +80,8 @@ def generate_response(request: Prompt):
         eos_id = 50256,
         repetition = 1.3
     )
-    response = token_ids_to_text(output, tokenizer)
+    response = token_ids_to_text(output[:, token_ids.shape[-1]:], tokenizer)
+
     return {
         "response": response
     } 

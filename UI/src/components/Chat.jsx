@@ -4,11 +4,30 @@ import InputBox from "./InputBox"
 export default function Chat() {
     const [messages, setMessages] = useState([])
 
-    function sendMessage(text) {
+    async function sendMessage(text) {
         if (!text.trim()) return
+
+        //sets the user message
         setMessages(prev => [
             ...prev,
             { role: "user", text}
+        ])
+
+        const response = await fetch("http://127.0.0.1:8000/generate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            
+
+            },
+            body: JSON.stringify({
+                prompt: text
+            })
+        })
+        const data = await response.json()
+
+        setMessages(prev => [
+            ...prev, {role: "assistant", text: data.response}
         ])
     }
 
