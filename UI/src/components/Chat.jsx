@@ -1,6 +1,6 @@
 import { useState } from "react"
 import InputBox from "./InputBox"
-
+import "./Chat.css"
 export default function Chat() {
     const [messages, setMessages] = useState([])
 
@@ -32,9 +32,8 @@ export default function Chat() {
     }
 
     return (
-        <div>
-            <h2> the chat component</h2>
-            <div>
+        <div className = "chat-container">
+            <div className = "messages">
                 {messages.map((message, i) => (
                     <div key = {i}>
                         <b>{message.role}: </b> {message.text}

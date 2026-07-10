@@ -1,0 +1,14 @@
+.input-container {
+    display: flex; 
+    width: 100%;
+
+}
+
+textarea {
+    flex:1;
+    box-sizing: border-box;
+    height: 50px;
+    resize: none;
+    overflow-y:auto; 
+    white-space: pre-wrap;
+}

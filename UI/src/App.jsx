@@ -7,7 +7,7 @@ function App() {
 
   return (
     <div>
-      <h1> Electron Test</h1>
+      <h1 class = "title"> MiniGPT</h1>
       <Chat/>
     </div>
   )
