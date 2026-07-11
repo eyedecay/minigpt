@@ -13,5 +13,5 @@ Download the latest zip in releases
 
 [#horizons](horizons.hackclub.com)
 
-- Model might take a bit to download weights on first run
+- Model might take a bit to download weights. If you wait like a minute then try prompting it it should work. 
 - It's probably going to suck cause I didn't have enough credits to pretrain for too long (was renting GPU) but it should give answers that semantically are close to input.
