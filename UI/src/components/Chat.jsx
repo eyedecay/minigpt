@@ -35,8 +35,8 @@ export default function Chat() {
         <div className = "chat-container">
             <div className = "messages">
                 {messages.map((message, i) => (
-                    <div key = {i}>
-                        <b>{message.role}: </b> {message.text}
+                    <div key = {i} className = {`message ${message.role}`}>
+                        {message.text}
                     </div>
                 ))}
             </div>

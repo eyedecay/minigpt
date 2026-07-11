@@ -1,9 +1,27 @@
 .chat-container {
     display: flex;
     flex-direction: column;
+    height: 80vh; 
 }
 
 .messages {
     flex: 1;
-    overflow-y: auto
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-container {
+    flex-shrink: 0;
+}
+
+
+.user {
+    align-self: flex-end;
+    background-color: gray;
+    border-radius: 15px;
+    padding: 4px 8px;
+}
+.assistant {
+    align-self: flex-start;
 }
