@@ -5,6 +5,9 @@ A GPT2 style language model
 ## Tech Stack
 - Used Python + Pytorch for model training and finetuning, FastAPI for a simple connection to a React + Electron frontend.
 
+##Installation
+Download the latest zip in releases
+
 ### AI Usage
 - Was used to explain Pytorch-specific things and to build application at the end cause I ran into too many issues with pyinstaller and things like that.
 
