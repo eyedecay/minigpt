@@ -2,7 +2,7 @@
 
 A GPT2 style language model 
 
-Some explanations of what I implemented can be found [here](https://github.com/eyedecay/minigpt/blob/main/RANDOMEXPLANATIONS.md) (Not that its not fully exhaustive and I'll probably so back and fix some things) 
+Some explanations of what I implemented can be found [here](https://github.com/eyedecay/minigpt/blob/main/RANDOMEXPLANATIONS.md) (Not that its not fully exhaustive and I'll probably so back and fix some things but it should be enough to explain the training + implementation process) 
 
 ## Tech Stack
 - Used Python + Pytorch for model training and finetuning, FastAPI for a simple connection to a React + Electron frontend.
