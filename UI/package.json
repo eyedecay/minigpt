@@ -1,14 +1,16 @@
 {
   "name": "electron-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "main": "electron-app/main.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "electron": "electron electron-app/main.js"
+    "electron": "electron electron-app/main.js",
+    "package": "vite build && electron-builder --mac && xattr -cr dist-electron/mac*/MiniGPT.app && codesign --deep --force -s - dist-electron/mac*/MiniGPT.app && cd dist-electron/mac* && zip -ry ../MiniGPT-1.0.0-arm64.zip MiniGPT.app"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -19,7 +21,31 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.3",
     "electron": "^43.0.0",
+    "electron-builder": "^26.15.3",
     "oxlint": "^1.71.0",
     "vite": "^8.1.1"
+  },
+  "build": {
+    "appId": "com.you.minigpt",
+    "productName": "MiniGPT",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron-app/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../backend/dist/minigpt-backend",
+        "to": "backend/minigpt-backend"
+      }
+    ],
+    "mac": {
+      "target": "dir",
+      "hardenedRuntime": false,
+      "identity": null
+
+    }
   }
 }

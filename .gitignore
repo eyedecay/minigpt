@@ -28,3 +28,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+dist/
+build/
+dist-electron
+*.spec
