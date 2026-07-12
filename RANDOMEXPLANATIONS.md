@@ -1,6 +1,6 @@
 Learning How LLMs Work
 
-Part 1: Input data
+Input data
 Turn textx into tokens into token ids into token embeddings + positional embeddings = input embeddings
 
 Tokens are turned into ids using a "known" vocabulary. In this case, using tiktoken. 
@@ -9,7 +9,7 @@ Tokens are turned into ids using a "known" vocabulary. In this case, using tikto
 - unknown token handling
 - created a dataset used with DataLoader and created a dataloader
 
-Part 2: Attention
+Attention
 Why self-attention? Other models needed to read full input and then "memorize" it. When translating text, the model can't look at full input and loses information. Self-attention can look at whole input by looking at the importance of different tokens. 
 
 (The simple "not real" self-attention)
@@ -40,7 +40,7 @@ Multi-Head Attention
 - Each head has different weights, so they will learn different features
 - Each head produces its own context vectors which are concatenated then applied a linear layer (out_proj) to mix them
 
-Part 3: Architecture
+Architecture
 
 - Layer Normalization: used to spped up training and stabilize by normalizing activations. For an input, layer computes mean and variance such that mean = 0 and variance = 1. 
     - Scale and Shift Weights in Layer Normalization are used to adjust the normalized output
@@ -57,15 +57,14 @@ Created the Transformer block and the GPT Model that includes the Transformer Bl
 
 - RoPE Embeddings: Instead of absolute positional embeddings, using RoPE ebeddings precomputes rotation angles for each position up to max_seq_len. The model can understand when two tokens are "x positions" apart rather than token x attends to token at other random position
 
-Part 4: Training
+Training
 
 Loss
 - Cross Entropy loss using torch.nn.functional.cross_entropy
 - Perplexity (A more interpretable version that is e^loss)
 
 
-Used very small training set(literally like one wiki article)
-Seperate into training and validation set. Batch Sizing for training
+Trained on AllenAI C4 dataset (did not use full thing though) Seperate into training and validation set. Batch Sizing for training
 
 Actual Training:
 - In each epoch, iterate over batches
@@ -85,4 +84,6 @@ Sampling allows the outputs to be more varied. A argmax just always picks the hi
 Top-k Sampling: Using torch.topk(), it is a way to control randomness by only picking the top-k most likely tokens before sampling. Thatway it still varies but still makes sense. 
 
 
-To chat with LLM: python -m src.main --mode run
+Finetuning
+
+Used Alpaca Dataset (pretty much all the exact same parameters as training) 
